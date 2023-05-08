@@ -22,6 +22,8 @@ namespace ariel{
         ~Point();
         void setX(double x){__x = x;}
         void setY(double y){__y = y;};
+        double getX(){return __x;}
+        double getY(){return __y;}
         double distance(const Point &other); //distance between current point and given one
         void print(); //prints the coordinates between parentheses (x, y)
 

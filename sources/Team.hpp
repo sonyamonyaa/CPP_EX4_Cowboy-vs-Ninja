@@ -25,7 +25,7 @@ namespace ariel
         GeneralTeam(Character *leader){setLeader(leader);};
         virtual ~GeneralTeam();
         void setLeader(Character *leader) {_leader = leader;}
-        virtual void add(const Character &member) = 0; // add a team member
+        virtual void add(Character *member) = 0; // add a team member
 
         /**
          * attack(Team rival):
@@ -50,7 +50,7 @@ namespace ariel
     public:
         Team(Character *leader): GeneralTeam(leader){};
         ~Team();
-        void add(const Character &member);
+        void add(Character *member);
 
         void attack(Team *rival);
         int stillAlive();
@@ -73,6 +73,9 @@ namespace ariel
 
     class SmartTeam : public GeneralTeam
     {
+        /**
+         * In this implementation, the find_weakest_link() method takes the opponent's leader point as an argument, and calculates the distance of each member from that point using the Euclidean distance formula. The members are then added to a priority queue with their distance as priority, and the member with the highest priority (i.e., the member closest to the opponent's leader) is returned as the weakest link.
+        */
     private:
         /* data */
     public:
