@@ -1,5 +1,5 @@
 #include "doctest.h"
-#include "sources/Character.hpp"
+#include "sources/Team.hpp"
 
 using namespace ariel;
 TEST_CASE("Test 1 - Point Functions")
@@ -47,7 +47,7 @@ TEST_CASE("Test 1 - Point Functions")
         CHECK(expected_point2.getX() == doctest::Approx(actual_point2.getX()).epsilon(0.0001));
         CHECK(expected_point2.getY() == doctest::Approx(actual_point2.getY()).epsilon(0.0001));
 
-        //Distance cannot be negative
+        // Distance cannot be negative
         CHECK_THROWS(Point::moveTowards(p1, p2, -5.0));
     }
     SUBCASE("1.4 - Check Print")
@@ -74,15 +74,15 @@ TEST_CASE("Test 2 - Character Functions")
         CHECK_NOTHROW(TrainedNinja("", point_ninja_tra));
     }
 
-    Cowboy cb ("Billy", point_cowboy);
-    YoungNinja yn ("Youngin", point_ninja_yng);
-    TrainedNinja tn ("Tony", point_ninja_tra);
-    OldNinja old ("Sensei", point_ninja_old);
+    Cowboy cb("Billy", point_cowboy);
+    YoungNinja yn("Youngin", point_ninja_yng);
+    TrainedNinja tn("Tony", point_ninja_tra);
+    OldNinja old("Sensei", point_ninja_old);
 
     SUBCASE("2.2 - Test getters")
     {
         CHECK_EQ(cb.getName(), "Billy");
-        //all should be alive rn
+        // all should be alive rn
         CHECK((cb.isAlive() && yn.isAlive() && tn.isAlive() && old.isAlive()));
         Point test_loc_yn = yn.getLocation();
         CHECK_EQ(test_loc_yn.getX(), point_ninja_yng.getX());
@@ -117,24 +117,23 @@ TEST_CASE("Test 2 - Character Functions")
     {
         SUBCASE("2.4.1 - Test initialization")
         {
-            //Health - tho it's guranteed by enums
+            // Health - tho it's guranteed by enums
             CHECK_EQ(yn.getHealth(), 100);
             CHECK_EQ(tn.getHealth(), 120);
             CHECK_EQ(old.getHealth(), 150);
 
-            //Speed
+            // Speed
             CHECK_EQ(yn.getSpeed(), 14);
             CHECK_EQ(tn.getSpeed(), 12);
             CHECK_EQ(old.getSpeed(), 8);
-
         }
 
         SUBCASE("2.4.2 - Test move")
         {
-            //all ninjas move towards cowboy
+            // all ninjas move towards cowboy
 
             Point expected_point_y(21.6, 28.8);
-            yn.move(&cb); 
+            yn.move(&cb);
             Point actual_point_y = yn.getLocation();
             CHECK(expected_point_y.getX() == doctest::Approx(actual_point_y.getX()).epsilon(0.0001));
             CHECK(expected_point_y.getY() == doctest::Approx(actual_point_y.getY()).epsilon(0.0001));
@@ -154,17 +153,26 @@ TEST_CASE("Test 2 - Character Functions")
 
         SUBCASE("2.4.3 - Test Slash")
         {
-            ///TODO: add the following tests: cannot slash null, cannot slash self
-            //ninjas too far to imply damage to cowboy
+            // ninjas too far to imply damage to cowboy
             yn.slash(&cb);
             tn.slash(&cb);
             old.slash(&cb);
-            CHECK_EQ(cb.getHealth(), 110); //didn't get hit
+            CHECK_EQ(cb.getHealth(), 110); // didn't get hit
 
-            //ninjas can slash eachother, because at the same point
+            // ninjas can slash eachother, because at the same point
             yn.slash(&old);
             int expected_health = 137;
             CHECK_EQ(old.getHealth(), expected_health);
+
+            // ninjas can't attack themselves
+            CHECK_THROWS(yn.slash(&yn));
+            CHECK_THROWS(tn.slash(&tn));
+            CHECK_THROWS(old.slash(&old));
+
+            // can't attack null enemy
+            CHECK_THROWS(yn.slash(NULL));
+            CHECK_THROWS(tn.slash(NULL));
+            CHECK_THROWS(old.slash(NULL));
         }
     }
 
@@ -180,27 +188,104 @@ TEST_CASE("Test 2 - Character Functions")
             cb.shoot(&yn);
             int expected_health = 90;
             CHECK_EQ(yn.getHealth(), expected_health);
-            ///TODO: add the following tests: cannot shoot null, cannot shoot self
+            // can't shoot themselves
+            CHECK_THROWS(cb.shoot(&cb));
+            // can't shoot null
+            CHECK_THROWS(cb.shoot(NULL));
         }
     }
 }
+
 TEST_CASE("Test 3 - Team Functions")
 {
+    // used in all tests
+    Point arbit(0, 0); // arbituary point
 
+    Cowboy ch1("", arbit);
+    YoungNinja ch2("", arbit);
+    TrainedNinja ch3("", arbit);
+    OldNinja ch4("", arbit);
     SUBCASE("3.1 - Test Team assembly")
     {
-        ///TODO: add members to the team till it's full
+        Team squad(&ch1);
+        CHECK_EQ(squad.stillAlive(), 1);
 
+        // add ninjas
+        squad.add(&ch2);
+        squad.add(&ch3);
+        squad.add(&ch4);
+        CHECK_EQ(squad.stillAlive(), 4);
+
+        SUBCASE("3.1.1 - impossible members")
+        {
+
+            // can't add existing member
+            CHECK_THROWS(squad.add(&ch4));
+
+            // can't add NULL member
+            CHECK_THROWS(squad.add(NULL));
+
+            // can't make a team with members from other team
+            CHECK_THROWS(Team(&ch2));
+
+            // can't steal a member from another team
+            Cowboy other_leader("", arbit);
+            Team other(&other_leader);
+            CHECK_THROWS(other.add(&ch3));
+        }
+
+        SUBCASE("3.1.2 - full team")
+        {
+            Cowboy ch5("", arbit);
+            Cowboy ch6("", arbit);
+            Cowboy ch7("", arbit);
+            Cowboy ch8("", arbit);
+            Cowboy ch9("", arbit);
+            Cowboy ch10("", arbit);
+
+            squad.add(&ch5);
+            squad.add(&ch6);
+            squad.add(&ch7);
+            squad.add(&ch8);
+            squad.add(&ch9);
+            squad.add(&ch10);
+
+            // team has 10 members at most
+            Cowboy outsider("", arbit);
+            CHECK_THROWS(squad.add(&outsider));
+        }
     }
-
 
     SUBCASE("3.2 - Test Team attacks")
     {
+        Team squad1(&ch1);
+        squad1.add(&ch2);
+        SUBCASE("3.2.3 - impossible attacks")
+        {
+            // can't attack yourself
+            CHECK_THROWS(squad1.attack(&squad1));
 
-    }
+            // can't attack null team
+            CHECK_THROWS(squad1.attack(NULL));
+        }
 
-    SUBCASE("3.3 - Different Teams have different prints")
-    {
-       
+        SUBCASE("3.2.4 - attack another team")
+        {
+            Team squad2(&ch3);
+            squad2.add(&ch4);
+
+            CHECK_EQ(squad1.stillAlive(), 2);
+            CHECK_EQ(squad2.stillAlive(), 2);
+
+            while (squad2.stillAlive() > 0)
+            {
+                squad1.attack(&squad2);
+            }
+            // squad 2 all dead and cannot be attacked again
+            CHECK_THROWS(squad1.attack(&squad2));
+
+            // dead cannot attack back
+            CHECK_THROWS(squad2.attack(&squad1));
+        }
     }
 }
