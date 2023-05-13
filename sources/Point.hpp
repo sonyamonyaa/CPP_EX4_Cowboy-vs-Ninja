@@ -11,24 +11,30 @@
 #include <stdexcept>
 #include <cassert>
 
-namespace ariel{
+namespace ariel
+{
     class Point
     {
     private:
-        double __x;
-        double __y;
-    public:
-        Point(double x, double y);
-        ~Point();
-        void setX(double x){__x = x;}
-        void setY(double y){__y = y;};
-        double getX(){return __x;}
-        double getY(){return __y;}
-        double distance(const Point &other); //distance between current point and given one
-        void print(); //prints the coordinates between parentheses (x, y)
+        double _x;
+        double _y;
 
-        static Point moveTowards(Point &src, Point &dest, double dist);//returns the closest point to dest which is within the limit of given distance from the src 
+    public:
+        Point(double point_x = 0, double point_y = 0);
+        void setX(double point_x) { _x = point_x; }
+        void setY(double point_y) { _y = point_y; };
+        double getX() const { return _x; }
+        double getY() const { return _y; }
+        double distance(const Point &other); // distance between current point and given one
+        void print();                        // prints the coordinates between parentheses (x, y)
+
+        static Point moveTowards(Point &src, Point &dest, double dist); // returns the closest point to dest which is within the limit of given distance from the src
+
+        Point(const Point &) = default;
+        Point &operator=(const Point &) = default;
+        Point(Point &&) noexcept = default;
+        Point &operator=(Point &&) noexcept = default;
+        ~Point() = default;
     };
-    
-    
+
 }

@@ -1,7 +1,8 @@
 #pragma once
+#include <array>
 #include "Character.hpp"
 
-#define MAX_MEMBERS 10
+const int MAX_MEMBERS = 10;
 namespace ariel
 {
     /**
@@ -16,83 +17,62 @@ namespace ariel
      *      //put the leader as the root/start of the structure, add/iterate based on distance.
      *      // during the attack make a priority queue by ref? of the rivaling team to find scape goat?
      */
-    class GeneralTeam
+
+    class Team
     {
-    private:
-        Character *_leader;
 
     public:
-        GeneralTeam(Character *leader){setLeader(leader);};
-        virtual ~GeneralTeam();
-        void setLeader(Character *leader) {_leader = leader;}
-        virtual void add(Character *member) = 0; // add a team member
+        Team(Character *leader);
+        virtual void add(Character *member);
+        virtual void attack(Team *rival);
+        int stillAlive(); // shouldn't be so different from the rest
+        virtual void print() const;
 
+        Team(const Team &) = default;
+        Team &operator=(const Team &) = default;
+        Team(Team &&) noexcept = default;
+        Team &operator=(Team &&) noexcept = default;
+        virtual ~Team();
+
+    // protected:
+        Character *leader;
+        std::array<Character *, MAX_MEMBERS> team = {nullptr};
+    };
+
+    class Team2 : public Team
+    {
+    public:
+        Team2(Character *leader) : Team(leader){};
+        void add(Character *member) override;
+        void attack(Team *rival) override;
+        void print() const override;
+
+        Team2(const Team2 &) = default;
+        Team2 &operator=(const Team2 &) = default;
+        Team2(Team2 &&) noexcept = default;
+        Team2 &operator=(Team2 &&) noexcept = default;
+        ~Team2() override;
+    };
+
+    class SmartTeam : public Team
+    {
         /**
-         * attack(Team rival):
-         *      first check if the leader is alive, if dead appoint the closest member to the leader's last location
-         *      Then, the attacking team chooses the scapegoat - the closest member of the rivaling team to the attacking leader
-         *      All the team members will attack the chosen scapegoat
-         *          Cowboys: if they have bullets they will shoot, otherwise will reload
-         *          Ninjas: if close enough will slash, otherwise move towards them
-         *      Each stage, if the scapegoat is dead, a new one will be chosen the same as before
-         *      If there are no members in the attacking team or the rival team, the attack is over
+         * In this implementation, the find_weakest_link() method takes the opponent's leader point as an argument, 
+         * and calculates the distance of each member from that point using the Euclidean distance formula. 
+         * The members are then added to a priority queue with their distance as priority, 
+         * and the member with the highest priority (i.e., the member closest to the opponent's leader) 
+         * is returned as the weakest link.
          */
-        virtual void attack(Team *rival) = 0;
-        virtual int stillAlive() = 0; // number of members that are still alive
-        virtual void print() = 0;     // goes over all the team members and prints them
-    };
-
-    class Team : public GeneralTeam
-    {
-    private:
-        // queue ninjas, queue cowboys
-
     public:
-        Team(Character *leader): GeneralTeam(leader){};
-        ~Team();
-        void add(Character *member);
+        SmartTeam(Character *leader) : Team(leader){};
+        void add(Character *member) override;
+        void attack(Team *rival) override;
+        void print() const override;
 
-        void attack(Team *rival);
-        int stillAlive();
-        void print();
+        SmartTeam(const SmartTeam &) = default;
+        SmartTeam &operator=(const SmartTeam &) = default;
+        SmartTeam(SmartTeam &&) noexcept = default;
+        SmartTeam &operator=(SmartTeam &&) noexcept = default;
+        ~SmartTeam() override;
     };
-
-    class Team2 : public GeneralTeam
-    {
-    private:
-        /* data */
-    public:
-        Team2(Character *leader): GeneralTeam(leader){};
-        ~Team2();
-        void add(Character *member);
-
-        void attack(Team *rival);
-        int stillAlive();
-        void print();
-    };
-
-    class SmartTeam : public GeneralTeam
-    {
-        /**
-         * In this implementation, the find_weakest_link() method takes the opponent's leader point as an argument, and calculates the distance of each member from that point using the Euclidean distance formula. The members are then added to a priority queue with their distance as priority, and the member with the highest priority (i.e., the member closest to the opponent's leader) is returned as the weakest link.
-        */
-    private:
-        /* data */
-    public:
-        SmartTeam(Character *leader): GeneralTeam(leader){};
-        SmartTeam();
-        void add(Character *member);
-
-        void attack(Team *rival);
-        int stillAlive();
-        void print();
-    };
-
-    // Team::Team(/* args */)
-    // {
-    // }
-
-    // Team::~Team()
-    // {
-    // }
 }

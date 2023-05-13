@@ -8,9 +8,6 @@ namespace ariel
         setY(y);
     }
 
-    Point::~Point()
-    {
-    }
     //https://stackoverflow.com/a/35069576
     double Point::distance(const Point &other)
     {
@@ -23,6 +20,6 @@ namespace ariel
     
     Point Point::moveTowards(Point &src, Point &dest, double dist)
     {
-        return;
+        return Point(0,0);
     }
 }
