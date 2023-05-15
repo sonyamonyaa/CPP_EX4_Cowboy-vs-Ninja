@@ -5,10 +5,8 @@ namespace ariel
 {
     class YoungNinja : public Ninja
     {
-    private:
     public:
-        YoungNinja(const string &name, const Point &loc)
-            : Ninja(name, loc, HealthPoints::youngNinjaHP, Speed::youngNinjaS){};
+        YoungNinja(const string &name, const Point &loc);
 
         YoungNinja(const YoungNinja &other) = default;
         YoungNinja &operator=(const YoungNinja &) = default;

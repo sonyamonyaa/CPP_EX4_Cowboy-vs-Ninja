@@ -6,8 +6,7 @@ namespace ariel
     class OldNinja : public Ninja
     {
     public:
-        OldNinja(const string &name, const Point &loc)
-            : Ninja(name, loc, HealthPoints::oldNinjaHP, Speed::oldNinjaS){};
+        OldNinja(const string &name, const Point &loc);
 
         OldNinja(const OldNinja &other) = default;
         OldNinja &operator=(const OldNinja &) = default;

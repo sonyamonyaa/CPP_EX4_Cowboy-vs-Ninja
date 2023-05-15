@@ -7,6 +7,11 @@ namespace ariel
      * Ninja
      * an instance of a character
      * has additional variable movementSpeed
+     * 
+     * There are 3 types of Ninjas:
+     * YoungNinja- movementSpeed = 14, health=100
+     * TrainedNinja- movementSpeed = 12, health=120
+     * OldNinja- movementSpeed = 8, health=150
      **/
     class Ninja : public Character
     {
