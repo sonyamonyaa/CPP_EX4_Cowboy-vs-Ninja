@@ -1,6 +1,10 @@
 #pragma once
 #include <array>
 #include "Character.hpp"
+#include "OldNinja.hpp"
+#include "YoungNinja.hpp"
+#include "TrainedNinja.hpp"
+#include "Cowboy.hpp"
 
 const int MAX_MEMBERS = 10;
 namespace ariel

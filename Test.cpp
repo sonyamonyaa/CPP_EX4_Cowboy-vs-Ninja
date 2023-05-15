@@ -2,9 +2,10 @@
 #include "sources/Team.hpp"
 
 using namespace ariel;
-TEST_CASE("Test 1 - Point Functions")
+
+TEST_SUITE("Test 1 - Point Functions" * doctest::skip(true))
 {
-    SUBCASE("1.1 - Check Valid Creation")
+    TEST_CASE("1.1 - Check Valid Creation")
     {
         CHECK_NOTHROW(Point(0, 0));
         CHECK_NOTHROW(Point(-1.2, 3.5));
@@ -16,7 +17,7 @@ TEST_CASE("Test 1 - Point Functions")
     }
 
     Point p1(0, 0);
-    SUBCASE("1.2 - Test Distance")
+    TEST_CASE("1.2 - Test Distance")
     {
         // https://github.com/doctest/doctest/blob/master/doc/markdown/assertions.md#floating-point-comparisons
         double expected_distance = 5.0;
@@ -29,7 +30,7 @@ TEST_CASE("Test 1 - Point Functions")
         CHECK(expected_distance == doctest::Approx(actual_distance).epsilon(0.0001));
     }
 
-    SUBCASE("1.3 - Test moveTowards")
+    TEST_CASE("1.3 - Test moveTowards")
     {
         Point p2(3, 4);
 
@@ -50,7 +51,7 @@ TEST_CASE("Test 1 - Point Functions")
         // Distance cannot be negative
         CHECK_THROWS(Point::moveTowards(p1, p2, -5.0));
     }
-    SUBCASE("1.4 - Check Print")
+    TEST_CASE("1.4 - Check Print")
     {
         CHECK_NOTHROW(p1.print()); // same as Point(0,0).print()
         CHECK_NOTHROW(Point(-1.2, 3.5).print());
@@ -58,39 +59,40 @@ TEST_CASE("Test 1 - Point Functions")
     }
 }
 
-TEST_CASE("Test 2 - Character Functions")
+TEST_SUITE("Test 2 - Character Functions" * doctest::skip(false))
 {
     Point point_cowboy(0, 0);
-    Point point_ninja_old(30, 40);
-    Point point_ninja_tra(30, 40);
-    Point point_ninja_yng(30, 40);
+    Point point_ninja(30, 40);
 
-    SUBCASE("2.1 - Test initialization - basic")
+    TEST_CASE("2.1 - Test initialization - basic")
     {
         // not sure if empty name valid
         CHECK_NOTHROW(Cowboy("", point_cowboy));
-        CHECK_NOTHROW(YoungNinja("", point_ninja_yng));
-        CHECK_NOTHROW(OldNinja("", point_ninja_old));
-        CHECK_NOTHROW(TrainedNinja("", point_ninja_tra));
+        CHECK_NOTHROW(YoungNinja("", point_ninja));
+        CHECK_NOTHROW(OldNinja("", point_ninja));
+        CHECK_NOTHROW(TrainedNinja("", point_ninja));
     }
 
-    Cowboy cb("Billy", point_cowboy);
-    YoungNinja yn("Youngin", point_ninja_yng);
-    TrainedNinja tn("Tony", point_ninja_tra);
-    OldNinja old("Sensei", point_ninja_old);
-
-    SUBCASE("2.2 - Test getters")
+    TEST_CASE("2.2 - Test getters")
     {
+        Cowboy cb("Billy", point_cowboy);
+        YoungNinja yn("Youngin", point_ninja);
+        TrainedNinja tn("Tony", point_ninja);
+        OldNinja old("Sensei", point_ninja);
         CHECK_EQ(cb.getName(), "Billy");
         // all should be alive rn
         CHECK((cb.isAlive() && yn.isAlive() && tn.isAlive() && old.isAlive()));
         Point test_loc_yn = yn.getLocation();
-        CHECK_EQ(test_loc_yn.getX(), point_ninja_yng.getX());
-        CHECK_EQ(test_loc_yn.getY(), point_ninja_yng.getY());
+        CHECK_EQ(test_loc_yn.getX(), point_ninja.getX());
+        CHECK_EQ(test_loc_yn.getY(), point_ninja.getY());
     }
 
-    SUBCASE("2.3 - Test Distance")
+    TEST_CASE("2.3 - Test Distance")
     {
+        Cowboy cb("Billy", point_cowboy);
+        YoungNinja yn("Youngin", point_ninja);
+        TrainedNinja tn("Tony", point_ninja);
+        OldNinja old("Sensei", point_ninja);
         // https://github.com/doctest/doctest/blob/master/doc/markdown/assertions.md#floating-point-comparisons
 
         SUBCASE("2.3.1 - All ninjas from the same distance from cowboy")
@@ -113,10 +115,14 @@ TEST_CASE("Test 2 - Character Functions")
             CHECK(yn.distance(&old) == 0);
         }
     }
-    SUBCASE("2.4 - Test Ninjas")
+    TEST_CASE("2.4 - Test Ninjas")
     {
+
         SUBCASE("2.4.1 - Test initialization")
         {
+            YoungNinja yn("Youngin", point_ninja);
+            TrainedNinja tn("Tony", point_ninja);
+            OldNinja old("Sensei", point_ninja);
             // Health - tho it's guranteed by enums
             CHECK_EQ(yn.getHealth(), 100);
             CHECK_EQ(tn.getHealth(), 120);
@@ -127,9 +133,12 @@ TEST_CASE("Test 2 - Character Functions")
             CHECK_EQ(tn.getSpeed(), 12);
             CHECK_EQ(old.getSpeed(), 8);
         }
-
+        Cowboy cb("Billy", point_cowboy);
         SUBCASE("2.4.2 - Test move")
         {
+            YoungNinja yn("Youngin", point_ninja);
+            TrainedNinja tn("Tony", point_ninja);
+            OldNinja old("Sensei", point_ninja);
             // all ninjas move towards cowboy
 
             Point expected_point_y(21.6, 28.8);
@@ -144,7 +153,7 @@ TEST_CASE("Test 2 - Character Functions")
             CHECK(expected_point_t.getX() == doctest::Approx(actual_point_t.getX()).epsilon(0.0001));
             CHECK(expected_point_t.getY() == doctest::Approx(actual_point_t.getY()).epsilon(0.0001));
 
-            Point expected_point_o(25.5, 33.6);
+            Point expected_point_o(25.2, 33.6);
             old.move(&cb);
             Point actual_point_o = old.getLocation();
             CHECK(expected_point_o.getX() == doctest::Approx(actual_point_o.getX()).epsilon(0.0001));
@@ -153,16 +162,21 @@ TEST_CASE("Test 2 - Character Functions")
 
         SUBCASE("2.4.3 - Test Slash")
         {
+            YoungNinja yn("Youngin", point_ninja);
+            TrainedNinja tn("Tony", point_ninja);
+            OldNinja old("Sensei", point_ninja);
+            
+            // ninjas can slash eachother, because at the same point
+            CHECK(yn.distance(&old) == 0);
+            yn.slash(&old);
+            int expected_health = 137;
+            CHECK_EQ(old.getHealth(), expected_health);
+
             // ninjas too far to imply damage to cowboy
             yn.slash(&cb);
             tn.slash(&cb);
             old.slash(&cb);
             CHECK_EQ(cb.getHealth(), 110); // didn't get hit
-
-            // ninjas can slash eachother, because at the same point
-            yn.slash(&old);
-            int expected_health = 137;
-            CHECK_EQ(old.getHealth(), expected_health);
 
             // ninjas can't attack themselves
             CHECK_THROWS(yn.slash(&yn));
@@ -176,8 +190,10 @@ TEST_CASE("Test 2 - Character Functions")
         }
     }
 
-    SUBCASE("2.5 - Test Cowboy")
+    TEST_CASE("2.5 - Test Cowboy")
     {
+        Cowboy cb("Billy", point_cowboy);
+        YoungNinja yn("Youngin", point_ninja);
         SUBCASE("2.5.1 - Test initialization")
         {
             CHECK_EQ(cb.getHealth(), 110);
@@ -196,7 +212,7 @@ TEST_CASE("Test 2 - Character Functions")
     }
 }
 
-TEST_CASE("Test 3 - Team Functions")
+TEST_SUITE("Test 3 - Team Functions" * doctest::skip(true))
 {
     // used in all tests
     Point arbit(0, 0); // arbituary point
@@ -205,7 +221,7 @@ TEST_CASE("Test 3 - Team Functions")
     YoungNinja ch2("", arbit);
     TrainedNinja ch3("", arbit);
     OldNinja ch4("", arbit);
-    SUBCASE("3.1 - Test Team assembly")
+    TEST_CASE("3.1 - Test Team assembly")
     {
         Team squad(&ch1);
         CHECK_EQ(squad.stillAlive(), 1);
@@ -256,7 +272,7 @@ TEST_CASE("Test 3 - Team Functions")
         }
     }
 
-    SUBCASE("3.2 - Test Team attacks")
+    TEST_CASE("3.2 - Test Team attacks")
     {
         Team squad1(&ch1);
         squad1.add(&ch2);

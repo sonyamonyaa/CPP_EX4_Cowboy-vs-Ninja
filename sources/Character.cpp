@@ -3,11 +3,17 @@ namespace ariel
 {
     double Character::distance(Character *other) const
     {
-        return 0.0;
+        double dist = this->getLocation().distance(other->getLocation());
+        return dist;
     }
 
     void Character::hit(int damage)
     {
+        this->_health -= damage;
+        if (this->_health < 0)
+        {
+            this->_health = 0;
+        }
     }
 
     /** name, health points, position.
@@ -16,30 +22,17 @@ namespace ariel
      **/
     string Character::print() const
     {
-        return string();
-    }
-
-    // Cowboy
-    void Cowboy::shoot(Character *enemy)
-    {
-    }
-
-    string Cowboy::print() const
-    {
-        return string();
-    }
-
-    // Ninja
-    void Ninja::move(Character *enemy)
-    {
-    }
-
-    void Ninja::slash(Character *enemy)
-    {
-    }
-
-    string Ninja::print() const
-    {
-        return string();
+        string represent = "";
+        if (this->isAlive())
+        {
+            represent += this->_name;
+            represent += " health:" + std::to_string(this->_health);
+        }
+        else
+        {
+            represent += "(" + this->_name + ")";
+        }
+        represent += " position:" + this->getLocation().toStr(); // doesn't say if position needed when dead
+        return represent;
     }
 }

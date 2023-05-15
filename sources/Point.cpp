@@ -1,4 +1,6 @@
 #include "Point.hpp"
+#include <cmath>
+#include <string>
 
 namespace ariel
 {
@@ -8,18 +10,40 @@ namespace ariel
         setY(y);
     }
 
-    //https://stackoverflow.com/a/35069576
-    double Point::distance(const Point &other)
+    // https://stackoverflow.com/a/35069576
+    double Point::distance(const Point &other) const
     {
-        return 0.0;
+        double dx = this->getX() - other.getX();
+        double dy = this->getY() - other.getY();
+        double res = (dx * dx) + (dy * dy);
+        return sqrt(res);
     }
-    
+
+    Point Point::moveTowards(const Point &src,const Point &dest, double dist)
+    {
+        if (dist < 0){
+            throw std::invalid_argument {"can't move for a negative distance"};
+        }
+        double total_dist = src.distance(dest);
+        if (total_dist == 0){
+            return dest;
+        }
+        double ratio = dist / total_dist;
+        // (((1 - t) * x0 + t * x1), ((1 - t) * y0 + t * y1))
+        double new_x = ((1 - ratio) * src.getX()) + (ratio * dest.getX()); 
+        double new_y = ((1 - ratio) * src.getY()) + (ratio * dest.getY()); 
+        return Point(new_x, new_y);
+    }
+
+
     void Point::print()
     {
+        std::cout << "(" << this->_x << "," << this->_y << ")" << std::endl;
     }
-    
-    Point Point::moveTowards(Point &src, Point &dest, double dist)
+
+    std::string Point::toStr()
     {
-        return Point(0,0);
+        std::string pos = "(" + std::to_string(this->_x) + ","+ std::to_string(this->_y) + ")";
+        return pos;
     }
 }
