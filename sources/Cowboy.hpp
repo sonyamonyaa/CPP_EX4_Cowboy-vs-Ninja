@@ -20,7 +20,7 @@ namespace ariel
         Cowboy(const string &name, const Point &loc) : Character(name, loc, HealthPoints::cowboyHP), bulletCount(MAX_BULLETS){};
 
         bool hasboolets() const { return bulletCount > NO_BULLETS; } // if bulletCount > 0
-        void reload() { bulletCount = MAX_BULLETS; };                // reload bulletCount with 6
+        void reload();                // reload bulletCount with 6
         void shoot(Character *enemy);                                // inflict damage to the enemy, bullet count goes down by 1
         string print() const override;
 

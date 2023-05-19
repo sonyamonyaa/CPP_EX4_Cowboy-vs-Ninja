@@ -9,6 +9,9 @@ namespace ariel
 
     void Character::hit(int damage)
     {
+        if(damage < 0){
+            throw std::invalid_argument{"damage must be positive"};
+        }
         this->_health -= damage;
         if (this->_health < 0)
         {

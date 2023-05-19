@@ -1,15 +1,34 @@
 #include "Cowboy.hpp"
 namespace ariel
 {
+    void Cowboy::reload()
+    {
+        if(this->isAlive())
+        {
+            bulletCount = MAX_BULLETS;
+        }
+        else{
+            throw std::runtime_error{"Dead cowboy can't reload"};
+        }
+    }
+
     void Cowboy::shoot(Character *enemy)
     {
         if (!enemy)
         {
-            throw string{"enemy is null"};
+            throw std::runtime_error{"enemy is null"};
         }
         if (enemy == this)
         {
-            throw string{"can't shoot self"};
+            throw std::runtime_error{"can't shoot self"};
+        }
+        if (!enemy->isAlive())
+        {
+            throw std::runtime_error{"can't shoot the dead"};
+        }
+        if(!this->isAlive())
+        {
+            throw std::runtime_error{"the dead cannot attack"};
         }
         // TODO: add a test if enemy a team member?
 

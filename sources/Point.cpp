@@ -38,12 +38,13 @@ namespace ariel
 
     void Point::print()
     {
-        std::cout << "(" << this->_x << "," << this->_y << ")" << std::endl;
+        std::cout << this->toStr() << std::endl;
     }
 
     std::string Point::toStr()
     {
-        std::string pos = "(" + std::to_string(this->_x) + ","+ std::to_string(this->_y) + ")";
-        return pos;
+        std::stringstream pos;
+        pos << "(" <<std::defaultfloat << this->_x << "," << this->_y << ")";
+        return pos.str();
     }
 }
