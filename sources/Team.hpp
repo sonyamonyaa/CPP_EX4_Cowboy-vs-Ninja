@@ -24,7 +24,7 @@ namespace ariel
 
     class Team
     {
-    protected:
+    private:
         // unsigned int cowboy_count;
         unsigned int curr_size;
         Character *leader;
@@ -35,17 +35,18 @@ namespace ariel
         virtual void add(Character *member);
         virtual void attack(Team *rival);
         int stillAlive(); // shouldn't be so different from the rest
-        virtual void print() const;
+        void print() const;
         Character *find_closest(Character *target, Team *from_team);
         bool isFull() const { return curr_size == MAX_MEMBERS; }
-        void updateSize() { curr_size++; }
-
+        void setLeader(Character *new_leader) { this->leader = new_leader; }
+        Character *getLeader() const { return this->leader; }
+        const std::vector<Character *> &getTeammates() const {return teammates;}
+        void insertTeammate(Character *member, bool front = false);
         Team(const Team &) = default;
         Team &operator=(const Team &) = default;
         Team(Team &&) noexcept = default;
         Team &operator=(Team &&) noexcept = default;
         virtual ~Team();
-        
     };
 
 }

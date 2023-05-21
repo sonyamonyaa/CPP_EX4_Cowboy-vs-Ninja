@@ -16,9 +16,8 @@ namespace ariel
 
         if (new_cowboy || new_ninja)
         {
-            member->enterTeam();
-            teammates.push_back(member);
-            updateSize();
+            
+            insertTeammate(member);
         }
         else
         {
@@ -30,17 +29,17 @@ namespace ariel
     {
         Team::attack(rival); // pretty much the same attack sequence
     }
-    void Team2::print() const
-    {
-        Team::print();
-    }
-    Team2::~Team2()
-    {
-        //empty cuz Team already takes care of the teammates container
-        // for (const auto &member : teammates)
-		// {
-		// 	delete member;
-		// }
-		// leader = NULL;
-    }
+    // void Team2::print() const
+    // {
+    //     Team::print();
+    // }
+    // Team2::~Team2()
+    // {
+    //     //empty cuz Team already takes care of the teammates container
+    //     // for (const auto &member : teammates)
+	// 	// {
+	// 	// 	delete member;
+	// 	// }
+	// 	// leader = NULL;
+    // }
 }

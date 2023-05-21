@@ -36,19 +36,16 @@ namespace ariel
 
 		if (new_cowboy)
 		{
-			teammates.insert(teammates.begin(), member);
-			curr_size++;
+			insertTeammate(member);
 		}
 		else if (new_ninja)
 		{
-			teammates.push_back(member);
-			curr_size++;
+			insertTeammate(member, true);
 		}
 		else
 		{
 			throw std::runtime_error{"Character is ambigous"};
 		}
-		member->enterTeam();
 	}
 	Character *Team::find_closest(Character *target, Team *from_team)
 	{
@@ -67,6 +64,20 @@ namespace ariel
 			}
 		}
 		return closest;
+	}
+
+	void Team::insertTeammate(Character *member, bool front)
+	{
+		curr_size++;
+		member->enterTeam();
+		if (!front)
+		{
+			teammates.push_back(member);
+		}
+		else
+		{
+			teammates.insert(teammates.begin(), member);
+		}
 	}
 
 	void Team::attack(Team *rival)
