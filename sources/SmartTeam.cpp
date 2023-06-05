@@ -103,7 +103,8 @@ namespace ariel
             // cowboy attacks the weakest at the moment
             if (cowboy){
                 Character *target = findWeakest(rival);
-                cowboy->shoot(target);
+                if(target)
+                    cowboy->shoot(target);
             }
         }
     }
